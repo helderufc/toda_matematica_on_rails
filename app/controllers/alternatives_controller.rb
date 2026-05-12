@@ -1,0 +1,19 @@
+class AlternativesController < ApplicationController
+  def index
+    question = Question.find(params[:question_id])
+    render json: question.alternatives
+  end
+
+  def create
+    question = Question.find(params[:question_id])
+    alt = question.alternatives.new(alternative_params)
+    alt.save!
+    render json: alt, status: :created
+  end
+
+  private
+
+  def alternative_params
+    params.require(:alternative).permit(:text, :correct)
+  end
+end

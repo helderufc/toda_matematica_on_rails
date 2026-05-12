@@ -1,0 +1,26 @@
+# question_one: 3 alternativas (1 correta, 2 erradas)
+alt_a_correct:
+  question: question_one
+  text: "2"
+  correct: true
+
+alt_a_wrong1:
+  question: question_one
+  text: "3"
+  correct: false
+
+alt_a_wrong2:
+  question: question_one
+  text: "1"
+  correct: false
+
+# question_two: 2 alternativas (1 correta, 1 errada)
+alt_b_correct:
+  question: question_two
+  text: "6"
+  correct: true
+
+alt_b_wrong:
+  question: question_two
+  text: "5"
+  correct: false

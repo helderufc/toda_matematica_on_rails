@@ -1,0 +1,509 @@
+_type: export
+__export_format: 4
+__export_date: "2026-05-12T00:00:00.000Z"
+__export_source: toda-matematica-on-rails
+resources:
+
+  # ─── Workspace ────────────────────────────────────────────────────────────────
+
+  - _id: wrk_toda_matematica
+    _type: workspace
+    name: Toda Matemática API
+    description: API Rails 8 – sem autenticação, GET e POST only
+    scope: collection
+
+  # ─── Ambiente ─────────────────────────────────────────────────────────────────
+
+  - _id: env_local
+    _type: environment
+    name: Local
+    data:
+      base_url: "http://localhost:3000"
+      course_id: "1"
+      module_id: "1"
+      lesson_id: "1"
+      quiz_id: "1"
+      question_id: "1"
+    parentId: wrk_toda_matematica
+    isPrivate: false
+
+  # ─── Pasta: Health ────────────────────────────────────────────────────────────
+
+  - _id: fld_health
+    _type: request_group
+    name: Health
+    parentId: wrk_toda_matematica
+    sortKey: 0
+
+  - _id: req_health_check
+    _type: request
+    name: Health check
+    method: GET
+    url: "{{ base_url }}/up"
+    headers: []
+    body: {}
+    parentId: fld_health
+    sortKey: 0
+
+  # ─── Pasta: Courses ───────────────────────────────────────────────────────────
+
+  - _id: fld_courses
+    _type: request_group
+    name: Courses
+    parentId: wrk_toda_matematica
+    sortKey: 1
+
+  - _id: req_courses_index
+    _type: request
+    name: Listar cursos
+    method: GET
+    url: "{{ base_url }}/courses"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_courses
+    sortKey: 0
+
+  - _id: req_courses_show
+    _type: request
+    name: Buscar curso
+    method: GET
+    url: "{{ base_url }}/courses/{{ course_id }}"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_courses
+    sortKey: 1
+
+  - _id: req_courses_create
+    _type: request
+    name: Criar curso
+    method: POST
+    url: "{{ base_url }}/courses"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "course": {
+            "title": "Álgebra Linear",
+            "category": "Matemática",
+            "description": "Introdução à álgebra linear com vetores e matrizes."
+          }
+        }
+    parentId: fld_courses
+    sortKey: 2
+
+  # ─── Pasta: Modules ───────────────────────────────────────────────────────────
+
+  - _id: fld_modules
+    _type: request_group
+    name: Modules
+    parentId: wrk_toda_matematica
+    sortKey: 2
+
+  - _id: req_modules_index
+    _type: request
+    name: Listar módulos do curso
+    method: GET
+    url: "{{ base_url }}/courses/{{ course_id }}/modules"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_modules
+    sortKey: 0
+
+  - _id: req_modules_show
+    _type: request
+    name: Buscar módulo
+    method: GET
+    url: "{{ base_url }}/modules/{{ module_id }}"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_modules
+    sortKey: 1
+
+  - _id: req_modules_create
+    _type: request
+    name: Criar módulo
+    method: POST
+    url: "{{ base_url }}/courses/{{ course_id }}/modules"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "modulo": {
+            "name": "Vetores no R²"
+          }
+        }
+    parentId: fld_modules
+    sortKey: 2
+
+  # ─── Pasta: Lessons ───────────────────────────────────────────────────────────
+
+  - _id: fld_lessons
+    _type: request_group
+    name: Lessons
+    parentId: wrk_toda_matematica
+    sortKey: 3
+
+  - _id: req_lessons_index
+    _type: request
+    name: Listar aulas do módulo
+    method: GET
+    url: "{{ base_url }}/modules/{{ module_id }}/lessons"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_lessons
+    sortKey: 0
+
+  - _id: req_lessons_show
+    _type: request
+    name: Buscar aula
+    method: GET
+    url: "{{ base_url }}/lessons/{{ lesson_id }}"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_lessons
+    sortKey: 1
+
+  - _id: req_lessons_create
+    _type: request
+    name: Criar aula (com conteúdo)
+    method: POST
+    url: "{{ base_url }}/modules/{{ module_id }}/lessons"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "lesson": {
+            "name": "Introdução aos Vetores",
+            "content_editor": "Um vetor é um objeto matemático que possui módulo, direção e sentido..."
+          }
+        }
+    parentId: fld_lessons
+    sortKey: 2
+
+  # ─── Pasta: Quizzes ───────────────────────────────────────────────────────────
+
+  - _id: fld_quizzes
+    _type: request_group
+    name: Quizzes
+    parentId: wrk_toda_matematica
+    sortKey: 4
+
+  - _id: req_quizzes_show
+    _type: request
+    name: Buscar quiz do módulo
+    method: GET
+    url: "{{ base_url }}/modules/{{ module_id }}/quiz"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_quizzes
+    sortKey: 0
+
+  - _id: req_quizzes_create
+    _type: request
+    name: Criar quiz com questões
+    method: POST
+    url: "{{ base_url }}/modules/{{ module_id }}/quiz"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "quiz": {
+            "show_correct_answers": true,
+            "show_points": true,
+            "show_wrong_answers": false,
+            "questions_attributes": [
+              {
+                "statement": "O que é um vetor?",
+                "points": 2,
+                "alternatives_attributes": [
+                  { "text": "Um objeto com módulo, direção e sentido", "correct": true },
+                  { "text": "Um número real qualquer", "correct": false },
+                  { "text": "Uma matriz quadrada", "correct": false }
+                ]
+              },
+              {
+                "statement": "Qual a dimensão do R³?",
+                "points": 1,
+                "alternatives_attributes": [
+                  { "text": "3", "correct": true },
+                  { "text": "2", "correct": false }
+                ]
+              }
+            ]
+          }
+        }
+    parentId: fld_quizzes
+    sortKey: 1
+
+  - _id: req_quizzes_configurar
+    _type: request
+    name: Configurar quiz
+    method: POST
+    url: "{{ base_url }}/quizzes/{{ quiz_id }}/configurar"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "quiz": {
+            "show_correct_answers": true,
+            "show_points": true,
+            "show_wrong_answers": true
+          }
+        }
+    parentId: fld_quizzes
+    sortKey: 2
+
+  # ─── Pasta: Questions ─────────────────────────────────────────────────────────
+
+  - _id: fld_questions
+    _type: request_group
+    name: Questions
+    parentId: wrk_toda_matematica
+    sortKey: 5
+
+  - _id: req_questions_index
+    _type: request
+    name: Listar questões do quiz
+    method: GET
+    url: "{{ base_url }}/quizzes/{{ quiz_id }}/questions"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_questions
+    sortKey: 0
+
+  - _id: req_questions_create
+    _type: request
+    name: Criar questão
+    method: POST
+    url: "{{ base_url }}/quizzes/{{ quiz_id }}/questions"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "question": {
+            "statement": "Quanto é a norma do vetor (3, 4)?",
+            "points": 2,
+            "alternatives_attributes": [
+              { "text": "5", "correct": true },
+              { "text": "7", "correct": false },
+              { "text": "12", "correct": false },
+              { "text": "1", "correct": false }
+            ]
+          }
+        }
+    parentId: fld_questions
+    sortKey: 1
+
+  # ─── Pasta: Alternatives ──────────────────────────────────────────────────────
+
+  - _id: fld_alternatives
+    _type: request_group
+    name: Alternatives
+    parentId: wrk_toda_matematica
+    sortKey: 6
+
+  - _id: req_alternatives_index
+    _type: request
+    name: Listar alternativas da questão
+    method: GET
+    url: "{{ base_url }}/questions/{{ question_id }}/alternatives"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_alternatives
+    sortKey: 0
+
+  - _id: req_alternatives_create
+    _type: request
+    name: Criar alternativa
+    method: POST
+    url: "{{ base_url }}/questions/{{ question_id }}/alternatives"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "alternative": {
+            "text": "Nova alternativa errada",
+            "correct": false
+          }
+        }
+    parentId: fld_alternatives
+    sortKey: 1
+
+  # ─── Pasta: Lesson AI ─────────────────────────────────────────────────────────
+
+  - _id: fld_lesson_ai
+    _type: request_group
+    name: Lesson AI
+    parentId: wrk_toda_matematica
+    sortKey: 7
+
+  - _id: req_lesson_ai_gerar
+    _type: request
+    name: Gerar conteúdo
+    method: POST
+    url: "{{ base_url }}/lessons/{{ lesson_id }}/gerar-conteudo"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_lesson_ai
+    sortKey: 0
+
+  - _id: req_lesson_ai_pendente
+    _type: request
+    name: Ver conteúdo pendente
+    method: GET
+    url: "{{ base_url }}/lessons/{{ lesson_id }}/conteudo-pendente"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_lesson_ai
+    sortKey: 1
+
+  - _id: req_lesson_ai_confirmar
+    _type: request
+    name: Confirmar conteúdo
+    method: POST
+    url: "{{ base_url }}/lessons/{{ lesson_id }}/confirmar-conteudo"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_lesson_ai
+    sortKey: 2
+
+  - _id: req_lesson_ai_regerar
+    _type: request
+    name: Regerar conteúdo
+    method: POST
+    url: "{{ base_url }}/lessons/{{ lesson_id }}/regerar-conteudo"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_lesson_ai
+    sortKey: 3
+
+  # ─── Pasta: Quiz AI ───────────────────────────────────────────────────────────
+
+  - _id: fld_quiz_ai
+    _type: request_group
+    name: Quiz AI
+    parentId: wrk_toda_matematica
+    sortKey: 8
+
+  - _id: req_quiz_ai_gerar
+    _type: request
+    name: Gerar quiz
+    method: POST
+    url: "{{ base_url }}/modules/{{ module_id }}/quiz/gerar"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "quantidade": 5
+        }
+    parentId: fld_quiz_ai
+    sortKey: 0
+
+  - _id: req_quiz_ai_pendente
+    _type: request
+    name: Ver quiz pendente
+    method: GET
+    url: "{{ base_url }}/modules/{{ module_id }}/quiz/pendente"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_quiz_ai
+    sortKey: 1
+
+  - _id: req_quiz_ai_confirmar
+    _type: request
+    name: Confirmar quiz
+    method: POST
+    url: "{{ base_url }}/modules/{{ module_id }}/quiz/confirmar"
+    headers:
+      - name: Accept
+        value: application/json
+    body: {}
+    parentId: fld_quiz_ai
+    sortKey: 2
+
+  - _id: req_quiz_ai_regerar
+    _type: request
+    name: Regerar quiz
+    method: POST
+    url: "{{ base_url }}/modules/{{ module_id }}/quiz/gerar"
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Accept
+        value: application/json
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "quantidade": 5
+        }
+    parentId: fld_quiz_ai
+    sortKey: 3

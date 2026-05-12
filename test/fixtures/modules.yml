@@ -1,0 +1,26 @@
+# "modules".classify => Module (built-in Ruby), então Rails não encontra Modulo
+# como model class. Solução: id, FKs e timestamps todos explícitos via ERB.
+
+module_one:
+  id: <%= ActiveRecord::FixtureSet.identify(:module_one) %>
+  course_id: <%= ActiveRecord::FixtureSet.identify(:math_101) %>
+  name: Módulo 1
+  order_num: 1
+  created_at: 2026-01-01 00:00:00
+  updated_at: 2026-01-01 00:00:00
+
+module_two:
+  id: <%= ActiveRecord::FixtureSet.identify(:module_two) %>
+  course_id: <%= ActiveRecord::FixtureSet.identify(:math_101) %>
+  name: Módulo 2
+  order_num: 2
+  created_at: 2026-01-01 00:00:00
+  updated_at: 2026-01-01 00:00:00
+
+module_empty:
+  id: <%= ActiveRecord::FixtureSet.identify(:module_empty) %>
+  course_id: <%= ActiveRecord::FixtureSet.identify(:physics_101) %>
+  name: Módulo Vazio
+  order_num: 1
+  created_at: 2026-01-01 00:00:00
+  updated_at: 2026-01-01 00:00:00

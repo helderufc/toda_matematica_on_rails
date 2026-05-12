@@ -10,6 +10,9 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
+    # "modules".classify => Module (built-in Ruby) — precisa de hint explícito.
+    set_fixture_class modules: Modulo
+
     # Add more helper methods to be used by all tests here...
   end
 end

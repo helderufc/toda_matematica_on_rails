@@ -1,0 +1,9 @@
+math_101:
+  title: Matemática Básica
+  category: Algebra
+  description: Curso introdutório de álgebra
+
+physics_101:
+  title: Física Básica
+  category: Física
+  description: Curso introdutório de física

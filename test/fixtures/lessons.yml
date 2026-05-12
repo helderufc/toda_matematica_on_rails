@@ -1,0 +1,17 @@
+# module_id usa identify porque "modules".classify => Module (built-in), não Modulo
+
+lesson_one:
+  module_id: <%= ActiveRecord::FixtureSet.identify(:module_one) %>
+  name: Aula 1
+  order_num: 1
+  content_editor: Conteúdo detalhado da primeira aula sobre álgebra
+
+lesson_two:
+  module_id: <%= ActiveRecord::FixtureSet.identify(:module_one) %>
+  name: Aula 2
+  order_num: 2
+
+lesson_barren:
+  module_id: <%= ActiveRecord::FixtureSet.identify(:module_two) %>
+  name: Aula Sem Conteúdo
+  order_num: 1

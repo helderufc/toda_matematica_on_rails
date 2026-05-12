@@ -1,0 +1,11 @@
+question_one:
+  quiz: quiz_one
+  statement: Qual é o resultado de 1+1?
+  order_num: 1
+  points: 1
+
+question_two:
+  quiz: quiz_one
+  statement: Quanto é 2×3?
+  order_num: 2
+  points: 2

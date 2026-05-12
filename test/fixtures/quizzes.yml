@@ -1,0 +1,5 @@
+quiz_one:
+  module_id: <%= ActiveRecord::FixtureSet.identify(:module_one) %>
+  show_correct_answers: false
+  show_points: false
+  show_wrong_answers: false
