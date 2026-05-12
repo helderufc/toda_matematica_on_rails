@@ -33,7 +33,7 @@ class QuizAiController < ApplicationController
     quiz = modulo.build_quiz(questions_attributes: questions_attrs)
     quiz.save!
     PendingContentStore.clear_quiz(modulo.id)
-    render json: quiz.as_json(include: { questions: { include: :alternatives } }), status: :created
+    render json: Quiz.includes(questions: :alternatives).find(quiz.id).as_json(include: { questions: { include: :alternatives } }), status: :created
   end
 
   def regerar

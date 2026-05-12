@@ -1,7 +1,7 @@
 class LessonsController < ApplicationController
   def index
     modulo = Modulo.find(params[:module_id])
-    render json: modulo.lessons.order(:order_num)
+    render json: cached_page("modules/#{modulo.id}/lessons", modulo.lessons.order(:order_num))
   end
 
   def show

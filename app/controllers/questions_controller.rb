@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   def index
     quiz = Quiz.find(params[:quiz_id])
-    render json: quiz.questions.order(:order_num).as_json(include: :alternatives)
+    render json: cached_page("quizzes/#{quiz.id}/questions", quiz.questions.includes(:alternatives).order(:order_num)) { |s| s.as_json(include: :alternatives) }
   end
 
   def create

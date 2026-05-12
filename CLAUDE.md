@@ -22,6 +22,52 @@ bin/rails db:prepare               # Create + migrate DB
 bin/rails db:seed:replant          # Reset DB and re-seed (used in CI)
 ```
 
+## Performance / Regression tests (k6)
+
+Script: `scripts/regression.js`
+
+**Pré-requisitos**: k6 instalado (`brew install k6` / `apt install k6` / [k6.io/docs/get-started/installation](https://k6.io/docs/get-started/installation)) e a aplicação rodando.
+
+```bash
+# Rodar contra o servidor local (perfil completo: estável 300 VUs, pico 2700 VUs)
+k6 run scripts/regression.js
+
+# Apontar para outro ambiente
+BASE_URL=https://staging.example.com k6 run scripts/regression.js
+
+# Saída com percentis detalhados
+k6 run --summary-trend-stats='p(50),p(90),p(95),p(99),max' scripts/regression.js
+
+# Smoke rápido (1 VU, 30 s) para verificar conectividade antes do load test
+k6 run --vus 1 --duration 30s scripts/regression.js
+```
+
+**Perfil de carga** (total ≈ 11 min):
+
+| Fase          | Duração | VUs  |
+|---------------|---------|------|
+| Aquecimento   | 1 min   | 0 → 300  |
+| Estado estável| 3 min   | 300      |
+| Subida ao pico| 2 min   | 300 → 2700 |
+| Pico          | 2 min   | 2700     |
+| Recuperação   | 2 min   | 2700 → 300 |
+| Desaquecimento| 1 min   | 300 → 0  |
+
+**Thresholds** (o teste falha se ultrapassados):
+
+| Métrica                          | Limite     |
+|----------------------------------|------------|
+| Taxa de erros HTTP               | < 1 %      |
+| p95 geral                        | < 500 ms   |
+| p99 geral                        | < 1500 ms  |
+| p95 leituras (`group: reads`)    | < 300 ms   |
+| p95 escritas (`group: writes`)   | < 800 ms   |
+| p95 fluxos IA (`group: ia`)      | < 1200 ms  |
+
+**Divisão das iterações**: 75 % leituras (todos os GETs) · 20 % escrita (fluxo CRUD completo) · 5 % IA (gerar → pendente → confirmar/regerar).
+
+O `setup()` cria um curso/módulo/aula/quiz dedicados ao load test antes das VUs subirem; esses IDs são reutilizados pelos cenários de leitura em todas as VUs.
+
 ## Environment
 
 Copy `.env` and fill in the values — `dotenv-rails` loads it automatically in development and test:

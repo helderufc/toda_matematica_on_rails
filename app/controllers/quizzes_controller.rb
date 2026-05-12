@@ -1,6 +1,6 @@
 class QuizzesController < ApplicationController
   def show
-    modulo = Modulo.find(params[:module_id])
+    modulo = Modulo.includes(quiz: { questions: :alternatives }).find(params[:module_id])
     quiz = modulo.quiz
     return render json: { error: "Quiz não encontrado" }, status: :not_found unless quiz
 
@@ -17,7 +17,7 @@ class QuizzesController < ApplicationController
     quiz = modulo.build_quiz(quiz_create_params)
     quiz.questions.each_with_index { |q, i| q.order_num = i + 1 }
     quiz.save!
-    render json: quiz_json(quiz), status: :created
+    render json: quiz_json(Quiz.includes(questions: :alternatives).find(quiz.id)), status: :created
   end
 
   def configurar

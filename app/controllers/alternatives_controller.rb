@@ -1,7 +1,7 @@
 class AlternativesController < ApplicationController
   def index
     question = Question.find(params[:question_id])
-    render json: question.alternatives
+    render json: cached_page("questions/#{question.id}/alternatives", question.alternatives)
   end
 
   def create

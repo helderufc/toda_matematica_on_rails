@@ -1,6 +1,6 @@
 class CoursesController < ApplicationController
   def index
-    render json: Course.order(:created_at)
+    render json: cached_page("courses", Course.order(:created_at))
   end
 
   def show
