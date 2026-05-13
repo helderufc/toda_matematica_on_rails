@@ -11,7 +11,7 @@ class LessonsController < ApplicationController
   def create
     modulo = Modulo.find(params[:module_id])
     l = modulo.lessons.new(lesson_params)
-    l.order_num = modulo.lessons.count + 1
+    l.order_num = modulo.lessons.maximum(:order_num).to_i + 1
 
     if params[:file].present?
       l.file_path = FileUploadService.save_pdf(params[:file])

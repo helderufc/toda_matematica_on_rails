@@ -7,7 +7,7 @@ class QuestionsController < ApplicationController
   def create
     quiz = Quiz.find(params[:quiz_id])
     q = quiz.questions.new(question_params)
-    q.order_num = quiz.questions.count + 1
+    q.order_num = quiz.questions.maximum(:order_num).to_i + 1
 
     q.save!
     render json: q.as_json(include: :alternatives), status: :created
