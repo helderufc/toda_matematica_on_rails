@@ -8,7 +8,9 @@
 /.bundle
 
 # Ignore all environment files.
-/.env*
+/.env
+
+compose.yml
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -30,5 +32,3 @@
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key
-
-.env
