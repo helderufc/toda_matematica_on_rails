@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   def index
     quiz = Quiz.find(params[:quiz_id])
-    render json: cached_page("quizzes/#{quiz.id}/questions", quiz.questions.includes(:alternatives).order(:order_num)) { |s| s.as_json(include: :alternatives) }
+    render json: cached_page("quizzes/#{quiz.id}/questions", quiz.questions.includes(:alternatives).order(:order_num)) { |s| QuestionSerializer.new(s).serialize }
   end
 
   def create
@@ -11,7 +11,7 @@ class QuestionsController < ApplicationController
     save_with_next_order_num!(q, quiz.questions)
     expire_page_cache("quizzes/#{quiz.id}/questions")
     expire_quiz_cache(quiz.module_id)
-    render json: q.as_json(include: :alternatives), status: :created
+    render json: QuestionSerializer.new(q).serialize, status: :created
   end
 
   private

@@ -4,6 +4,9 @@ class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordNotFound,   with: :not_found
   rescue_from ActiveRecord::RecordInvalid,    with: :unprocessable_entity
 
+  # Prosopite escaneia cada request por N+1 queries (carregado só fora de produção).
+  around_action :detect_n_plus_one_queries if defined?(Prosopite)
+
   private
 
   # Atribui o próximo order_num dentro de `scope` e salva. Sob concorrência, dois
@@ -31,5 +34,12 @@ class ApplicationController < ActionController::API
 
   def unprocessable_entity(e)
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+  end
+
+  def detect_n_plus_one_queries
+    Prosopite.scan
+    yield
+  ensure
+    Prosopite.finish
   end
 end

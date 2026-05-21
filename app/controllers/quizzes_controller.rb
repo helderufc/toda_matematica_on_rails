@@ -35,17 +35,7 @@ class QuizzesController < ApplicationController
   private
 
   def quiz_json(quiz)
-    quiz.as_json(
-      only: %i[id show_wrong_answers show_correct_answers show_points],
-      include: {
-        questions: {
-          only: %i[id statement points order_num],
-          include: {
-            alternatives: { only: %i[id text correct] }
-          }
-        }
-      }
-    )
+    QuizSerializer.new(quiz).serialize
   end
 
   def quiz_create_params

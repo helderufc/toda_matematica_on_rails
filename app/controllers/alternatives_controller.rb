@@ -2,7 +2,7 @@ class AlternativesController < ApplicationController
   def index
     question = Question.find(params[:question_id])
     render json: Rails.cache.fetch("questions/#{question.id}/alternatives", expires_in: Paginatable::CACHE_TTL) {
-      question.alternatives.as_json
+      AlternativeSerializer.new(question.alternatives).serialize
     }
   end
 
@@ -12,7 +12,7 @@ class AlternativesController < ApplicationController
     alt.save!
     Rails.cache.delete("questions/#{question.id}/alternatives")
     expire_quiz_cache(question.quiz.module_id)
-    render json: alt, status: :created
+    render json: AlternativeSerializer.new(alt).serialize, status: :created
   end
 
   private

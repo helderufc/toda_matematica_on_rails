@@ -35,17 +35,7 @@ class QuizAiController < ApplicationController
     PendingContentStore.clear_quiz(modulo.id)
     expire_quiz_cache(modulo.id)
     persisted = Quiz.includes(questions: :alternatives).find(quiz.id)
-    render json: persisted.as_json(
-      only: %i[id show_wrong_answers show_correct_answers show_points],
-      include: {
-        questions: {
-          only: %i[id statement points order_num],
-          include: {
-            alternatives: { only: %i[id text correct] }
-          }
-        }
-      }
-    ), status: :created
+    render json: QuizSerializer.new(persisted).serialize, status: :created
   end
 
   def regerar
