@@ -23,6 +23,7 @@ class LessonAiController < ApplicationController
 
     lesson.update!(content_editor: content)
     PendingContentStore.clear_lesson(lesson.id)
+    Rails.cache.delete("lessons/#{lesson.id}/show")
     render json: lesson
   end
 

@@ -4,7 +4,10 @@ class CoursesController < ApplicationController
   end
 
   def show
-    render json: course if stale?(course, public: true)
+    json = Rails.cache.fetch("courses/#{params[:id]}/show", expires_in: Paginatable::CACHE_TTL) do
+      course.as_json
+    end
+    render json: json
   end
 
   def create

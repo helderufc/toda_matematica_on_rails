@@ -5,7 +5,10 @@ class ModulesController < ApplicationController
   end
 
   def show
-    render json: modulo if stale?(modulo, public: true)
+    json = Rails.cache.fetch("modules/#{params[:id]}/show", expires_in: Paginatable::CACHE_TTL) do
+      modulo.as_json
+    end
+    render json: json
   end
 
   def create

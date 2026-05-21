@@ -34,7 +34,18 @@ class QuizAiController < ApplicationController
     quiz.save!
     PendingContentStore.clear_quiz(modulo.id)
     expire_quiz_cache(modulo.id)
-    render json: Quiz.includes(questions: :alternatives).find(quiz.id).as_json(include: { questions: { include: :alternatives } }), status: :created
+    persisted = Quiz.includes(questions: :alternatives).find(quiz.id)
+    render json: persisted.as_json(
+      only: %i[id show_wrong_answers show_correct_answers show_points],
+      include: {
+        questions: {
+          only: %i[id statement points order_num],
+          include: {
+            alternatives: { only: %i[id text correct] }
+          }
+        }
+      }
+    ), status: :created
   end
 
   def regerar
@@ -51,6 +62,6 @@ class QuizAiController < ApplicationController
   private
 
   def modulo
-    @modulo ||= Modulo.find(params[:module_id])
+    @modulo ||= Modulo.includes(:quiz).find(params[:module_id])
   end
 end

@@ -1,12 +1,15 @@
 class LessonsController < ApplicationController
   def index
     modulo = Modulo.find(params[:module_id])
-    scope = modulo.lessons.select(Lesson.column_names - %w[content_editor]).order(:order_num)
+    scope = modulo.lessons.without_content.order(:order_num)
     render json: cached_page("modules/#{modulo.id}/lessons", scope)
   end
 
   def show
-    render json: lesson if stale?(lesson, public: true)
+    json = Rails.cache.fetch("lessons/#{params[:id]}/show", expires_in: Paginatable::CACHE_TTL) do
+      lesson.as_json
+    end
+    render json: json
   end
 
   def create

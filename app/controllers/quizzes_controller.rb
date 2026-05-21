@@ -12,7 +12,7 @@ class QuizzesController < ApplicationController
   end
 
   def create
-    modulo = Modulo.find(params[:module_id])
+    modulo = Modulo.includes(:quiz).find(params[:module_id])
 
     if modulo.quiz.present?
       return render json: { error: "Este módulo já possui um quiz" }, status: :unprocessable_entity
@@ -35,7 +35,17 @@ class QuizzesController < ApplicationController
   private
 
   def quiz_json(quiz)
-    quiz.as_json(include: { questions: { include: :alternatives } })
+    quiz.as_json(
+      only: %i[id show_wrong_answers show_correct_answers show_points],
+      include: {
+        questions: {
+          only: %i[id statement points order_num],
+          include: {
+            alternatives: { only: %i[id text correct] }
+          }
+        }
+      }
+    )
   end
 
   def quiz_create_params

@@ -1,14 +1,16 @@
 class AlternativesController < ApplicationController
   def index
     question = Question.find(params[:question_id])
-    render json: cached_page("questions/#{question.id}/alternatives", question.alternatives)
+    render json: Rails.cache.fetch("questions/#{question.id}/alternatives", expires_in: Paginatable::CACHE_TTL) {
+      question.alternatives.as_json
+    }
   end
 
   def create
-    question = Question.find(params[:question_id])
+    question = Question.includes(:quiz).find(params[:question_id])
     alt = question.alternatives.new(alternative_params)
     alt.save!
-    expire_page_cache("questions/#{question.id}/alternatives")
+    Rails.cache.delete("questions/#{question.id}/alternatives")
     expire_quiz_cache(question.quiz.module_id)
     render json: alt, status: :created
   end
