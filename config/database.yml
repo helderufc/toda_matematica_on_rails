@@ -3,7 +3,7 @@ default: &default
   encoding: unicode
   # Desativado para compatibilidade com o PgBouncer em transaction pooling mode.
   prepared_statements: false
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 3 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host:     <%= ENV.fetch("DB_HOST",     "localhost") %>
   port:     <%= ENV.fetch("DB_PORT",     5432) %>
   username: <%= ENV.fetch("DB_USERNAME", "postgres") %>

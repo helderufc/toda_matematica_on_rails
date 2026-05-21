@@ -1,2 +1,8 @@
 #!/usr/bin/env ruby
+# Pré-carrega jemalloc (substitui o malloc da glibc) e limita a fragmentação
+# das arenas. Reduz RSS e estabiliza p99 em workloads multi-thread.
+jemalloc = ["/usr/lib/libjemalloc.so.2", "/usr/lib/x86_64-linux-gnu/libjemalloc.so.2"].find { |p| File.exist?(p) }
+ENV["LD_PRELOAD"] = [ENV["LD_PRELOAD"], jemalloc].compact.join(":") if jemalloc
+ENV["MALLOC_ARENA_MAX"] ||= "2"
+
 exec "./bin/rails", "server", *ARGV
