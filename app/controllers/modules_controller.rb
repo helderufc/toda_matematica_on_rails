@@ -5,19 +5,19 @@ class ModulesController < ApplicationController
   end
 
   def show
-    render json: modulo
+    render json: modulo if stale?(modulo, public: true)
   end
 
   def create
     course = Course.find(params[:course_id])
     m = course.modulos.new(modulo_params)
-    m.order_num = course.modulos.maximum(:order_num).to_i + 1
 
     if params[:image].present?
       m.image_path = FileUploadService.save_image(params[:image])
     end
 
-    m.save!
+    save_with_next_order_num!(m, course.modulos)
+    expire_page_cache("courses/#{course.id}/modules")
     render json: m, status: :created
   rescue ArgumentError => e
     render json: { error: e.message }, status: :unprocessable_entity

@@ -74,4 +74,21 @@ class QuizzesControllerTest < ActionDispatch::IntegrationTest
       as: :json
     assert_response :not_found
   end
+
+  test "GET /modules/:id/quiz reflete questão adicionada (cache invalidado)" do
+    mod_id = modules(:module_one).id
+    quiz   = quizzes(:quiz_one)
+
+    get "/modules/#{mod_id}/quiz", as: :json
+    before = response.parsed_body["questions"].size
+
+    post "/quizzes/#{quiz.id}/questions",
+      params: { question: { statement: "Quanto é 5-2?", points: 1,
+        alternatives_attributes: [ { text: "3", correct: true }, { text: "4", correct: false } ] } },
+      as: :json
+    assert_response :created
+
+    get "/modules/#{mod_id}/quiz", as: :json
+    assert_equal before + 1, response.parsed_body["questions"].size
+  end
 end

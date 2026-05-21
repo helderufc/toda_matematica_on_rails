@@ -7,9 +7,13 @@ module Paginatable
   # Uncached pagination — returns an AR relation (headers always set).
   def paginate(scope)
     page  = [params.fetch(:page, 1).to_i, 1].max
-    total = scope.except(:includes, :order).count
+    total = scope.except(:includes, :order, :select).count(:id)
     set_pagination_headers(total, page)
     scope.offset((page - 1) * PER_PAGE).limit(PER_PAGE)
+  end
+
+  def expire_page_cache(cache_ns)
+    Rails.cache.delete_matched("#{cache_ns}/p*")
   end
 
   # Cached pagination — stores { total:, json: } in Rails.cache (Redis in prod).
@@ -21,7 +25,7 @@ module Paginatable
     result = Rails.cache.fetch("#{cache_ns}/p#{page}", expires_in: CACHE_TTL) do
       paged = scope.offset((page - 1) * PER_PAGE).limit(PER_PAGE)
       {
-        total: scope.except(:includes, :order).count,
+        total: scope.except(:includes, :order, :select).count(:id),
         json:  serializer ? serializer.call(paged) : paged.as_json
       }
     end

@@ -74,7 +74,7 @@ Copy `.env` and fill in the values — `dotenv-rails` loads it automatically in 
 
 ```
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=5433                         # Postgres directly (dev / test / migrations)
 DB_USERNAME=
 DB_PASSWORD=
 DB_NAME=toda_matematica_production   # only used in production
@@ -83,6 +83,8 @@ REDIS_URL=redis://localhost:6379/0
 
 UPLOAD_DIR=                          # absolute path for file storage; defaults to storage/uploads/
 ```
+
+In **production** the app connects to PostgreSQL through **PgBouncer** in transaction pooling mode (a Kamal accessory — see `config/deploy.yml`). `prepared_statements` is disabled in `database.yml` for transaction-mode compatibility. Locally `compose.yml` runs PgBouncer on `6432`, but dev, tests and migrations connect to Postgres directly on `5433`: the parallel test harness drops/recreates per-worker databases, which a pooler blocks. To exercise the app against PgBouncer locally, start the server with `DB_PORT=6432`.
 
 ## Architecture
 

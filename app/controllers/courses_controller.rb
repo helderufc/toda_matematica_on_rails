@@ -4,7 +4,7 @@ class CoursesController < ApplicationController
   end
 
   def show
-    render json: course
+    render json: course if stale?(course, public: true)
   end
 
   def create
@@ -15,6 +15,7 @@ class CoursesController < ApplicationController
     end
 
     c.save!
+    expire_page_cache("courses")
     render json: c, status: :created
   rescue ArgumentError => e
     render json: { error: e.message }, status: :unprocessable_entity

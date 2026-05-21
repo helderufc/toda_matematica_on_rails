@@ -7,9 +7,10 @@ class QuestionsController < ApplicationController
   def create
     quiz = Quiz.find(params[:quiz_id])
     q = quiz.questions.new(question_params)
-    q.order_num = quiz.questions.maximum(:order_num).to_i + 1
 
-    q.save!
+    save_with_next_order_num!(q, quiz.questions)
+    expire_page_cache("quizzes/#{quiz.id}/questions")
+    expire_quiz_cache(quiz.module_id)
     render json: q.as_json(include: :alternatives), status: :created
   end
 

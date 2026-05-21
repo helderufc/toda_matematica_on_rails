@@ -5,4 +5,8 @@ class Quiz < ApplicationRecord
   accepts_nested_attributes_for :questions
 
   validates :module_id, uniqueness: { message: "Este módulo já possui um quiz" }
+
+  def self.cache_key_for_module(module_id)
+    "modules/#{module_id}/quiz"
+  end
 end
